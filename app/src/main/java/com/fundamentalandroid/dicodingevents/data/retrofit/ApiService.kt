@@ -3,6 +3,8 @@ package com.fundamentalandroid.dicodingevents.data.retrofit
 import com.fundamentalandroid.dicodingevents.data.respons.EventResponse
 import com.fundamentalandroid.dicodingevents.data.respons.ListEventsItem
 import retrofit2.Call
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
