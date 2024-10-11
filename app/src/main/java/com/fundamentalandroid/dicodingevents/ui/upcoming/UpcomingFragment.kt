@@ -38,13 +38,11 @@ class UpcomingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Set layout manager and item decoration for RecyclerView
         val layoutManager = LinearLayoutManager(context)
         binding.recycleUpcoming.layoutManager = layoutManager
         val itemDecoration = DividerItemDecoration(requireContext(), layoutManager.orientation)
         binding.recycleUpcoming.addItemDecoration(itemDecoration)
 
-        // Call method to fetch event data
         findEvent()
     }
 

@@ -4,7 +4,8 @@
     <string name="title_finished">Finished</string>
     <string name="title_upcoming">Upcoming</string>
     <string name="title">Dicoding Events</string>
-    <string name="desc">Upcoming events</string>
+    <string name="descUp">Upcoming events</string>
+    <string name="descFin">Upcoming events</string>
     <string name="event_image">Event image</string>
     <string name="event_title">Event Title</string>
 </resources>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,40 +8,25 @@
     android:padding="16dp"
     tools:context=".ui.upcoming.UpcomingFragment">
 
-    <TextView
-        android:id="@+id/titleUpcoming"
-        style="@style/title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/title"
-        android:paddingBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/descUpcoming"/>
-
-    <TextView
-        android:id="@+id/descUpcoming"
-        style="@style/description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/desc"
-        android:paddingBottom="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/titleUpcoming"/>
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycleUpcoming"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/descUpcoming"
-        app:layout_constraintBottom_toTopOf="@id/ProgressBar"/>
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <ProgressBar
         android:id="@+id/ProgressBar"
         style="?attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="invisible"
         android:background="@android:color/transparent"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recycleUpcoming" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

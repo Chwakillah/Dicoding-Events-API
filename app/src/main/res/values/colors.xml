@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="blue">#2D3F50</color>
     <color name="background">#F6F9FF</color>
+    <color name="linestroke">#DDE5E9</color>
 </resources>
