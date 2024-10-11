@@ -14,7 +14,6 @@ class DetailEvent : AppCompatActivity() {
         binding = FragmentDetailEventBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Ambil data dari Intent
         val eventName = intent.getStringExtra("EVENT_NAME")
         val eventSummary = intent.getStringExtra("EVENT_SUMMARY")
         val eventCategory = intent.getStringExtra("EVENT_CATEGORY")
@@ -25,12 +24,11 @@ class DetailEvent : AppCompatActivity() {
         val eventBeginTime = intent.getStringExtra("EVENT_BEGIN_TIME")
         val eventEndTime = intent.getStringExtra("EVENT_END_TIME")
         val eventInfo = intent.getStringExtra("EVENT_INFO")
-        val eventImgUrl = intent.getStringExtra("EVENT_IMG") // Ganti nama variabel ini
+        val eventImgUrl = intent.getStringExtra("EVENT_IMG")
 
-        // Tampilkan data di UI dengan binding
         binding.apply {
             eventTitle.text = eventName
-//            eventSummary.text = eventSummary
+            eventSummarize.text = eventSummary
             categoryText.text = eventCategory
             ownerText.text = eventOwner
             cityText.text = eventCity
@@ -38,12 +36,11 @@ class DetailEvent : AppCompatActivity() {
             registrantsText.text = eventRegistrants.toString()
             beginTimeText.text = eventBeginTime
             endTimeText.text = eventEndTime
-//            eventInfo.text = eventInfo
+            eventInformation.text = eventInfo
 
-            // Gunakan Glide untuk menampilkan gambar
             Glide.with(this@DetailEvent)
-                .load(eventImgUrl)  // Pakai eventImgUrl untuk URL gambar
-                .into(binding.eventImg)  // ImageView dengan ID eventImg
+                .load(eventImgUrl)
+                .into(binding.eventImg)
         }
     }
 }
