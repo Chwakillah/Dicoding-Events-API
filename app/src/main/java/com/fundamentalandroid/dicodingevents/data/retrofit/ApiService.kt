@@ -3,8 +3,6 @@ package com.fundamentalandroid.dicodingevents.data.retrofit
 import com.fundamentalandroid.dicodingevents.data.respons.EventResponse
 import com.fundamentalandroid.dicodingevents.data.respons.ListEventsItem
 import retrofit2.Call
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -20,9 +18,4 @@ interface ApiService {
         @Query("active") active: Int = -1,
         @Query("q") query: String
     ): Call<List<ListEventsItem>>
-
-    @GET("events/{id}")
-    fun getEventDetails(
-        @Path("id") id: String
-    ): Call<ListEventsItem>
 }

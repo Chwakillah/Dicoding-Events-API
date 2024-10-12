@@ -92,7 +92,7 @@
                         android:layout_height="wrap_content"
                         android:paddingStart="8dp"
                         android:paddingEnd="8dp"
-                        android:text="Dicoding Event" />
+                        tools:text="Dicoding Event" />
                 </TableRow>
 
                 <TableRow>
@@ -108,7 +108,7 @@
                         android:layout_height="wrap_content"
                         android:paddingStart="8dp"
                         android:paddingEnd="8dp"
-                        android:text="Online" />
+                        tools:text="Online" />
                 </TableRow>
 
                 <TableRow>

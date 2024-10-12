@@ -5,9 +5,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.navigation.fragment.findNavController
 import com.fundamentalandroid.dicodingevents.data.respons.EventResponse
 import com.fundamentalandroid.dicodingevents.data.respons.ListEventsItem
 import com.fundamentalandroid.dicodingevents.data.retrofit.ApiConfig
@@ -61,28 +63,37 @@ class FinishedFragment : Fragment() {
                         setEventData(responseBody.listEvents)
                     } else {
                         Log.e(TAG, "Error: ${responseBody?.message}")
+                        showError("Gagal memuat data: ${responseBody?.message ?: "Terjadi kesalahan."}")
                     }
                 } else {
                     Log.e(TAG, "onFailure: ${response.message()}")
+                    showError("Kesalahan respons: ${response.message()}")
                 }
             }
 
             override fun onFailure(call: Call<EventResponse>, t: Throwable) {
                 showLoading(false)
                 Log.e(TAG, "onFailure: ${t.message}")
+                showError("Kesalahan jaringan: ${t.message ?: "Gagal memuat."}")
             }
         })
     }
 
     private fun setEventData(listEvents: List<ListEventsItem>) {
-        val adapter = EventAdapter()
+        val adapter = EventAdapter { event ->
+            val action = FinishedFragmentDirections.actionFinishedFragmentToDetailEvent(event)
+            findNavController().navigate(action)
+        }
         adapter.submitList(listEvents)
         binding.recycleFinished.adapter = adapter
     }
 
-
     private fun showLoading(isLoading: Boolean) {
         binding.ProgressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+
+    private fun showError(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 
     override fun onDestroyView() {
@@ -90,4 +101,3 @@ class FinishedFragment : Fragment() {
         _binding = null
     }
 }
-
