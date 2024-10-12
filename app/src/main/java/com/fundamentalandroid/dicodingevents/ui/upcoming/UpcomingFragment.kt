@@ -1,26 +1,24 @@
 package com.fundamentalandroid.dicodingevents.ui.upcoming
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.fundamentalandroid.dicodingevents.data.respons.EventResponse
+import androidx.navigation.fragment.findNavController
 import com.fundamentalandroid.dicodingevents.data.respons.ListEventsItem
-import com.fundamentalandroid.dicodingevents.data.retrofit.ApiConfig
 import com.fundamentalandroid.dicodingevents.databinding.FragmentUpcomingBinding
 import com.fundamentalandroid.dicodingevents.ui.EventAdapter
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class UpcomingFragment : Fragment() {
 
     private var _binding: FragmentUpcomingBinding? = null
     private val binding get() = _binding!!
+    private lateinit var viewModel: UpcomingViewModel
 
     companion object {
         private const val TAG = "UpcomingFragment"
@@ -38,51 +36,43 @@ class UpcomingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel = ViewModelProvider(this).get(UpcomingViewModel::class.java)
+
         val layoutManager = LinearLayoutManager(context)
         binding.recycleUpcoming.layoutManager = layoutManager
         val itemDecoration = DividerItemDecoration(requireContext(), layoutManager.orientation)
         binding.recycleUpcoming.addItemDecoration(itemDecoration)
 
-        findEvent()
-    }
-
-    private fun findEvent() {
-        showLoading(true)
-        val client = ApiConfig.getApiService().getEvents(1)
-        client.enqueue(object : Callback<EventResponse> {
-            override fun onResponse(
-                call: Call<EventResponse>,
-                response: Response<EventResponse>
-            ) {
-                showLoading(false)
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    if (responseBody != null && !responseBody.error) {
-                        setEventData(responseBody.listEvents)
-                    } else {
-                        Log.e(TAG, "Error: ${responseBody?.message}")
-                    }
-                } else {
-                    Log.e(TAG, "onFailure: ${response.message()}")
-                }
-            }
-
-            override fun onFailure(call: Call<EventResponse>, t: Throwable) {
-                showLoading(false)
-                Log.e(TAG, "onFailure: ${t.message}")
-            }
+        viewModel.events.observe(viewLifecycleOwner, { listEvents ->
+            setEventData(listEvents)
         })
+
+        viewModel.errorMessage.observe(viewLifecycleOwner, { error ->
+            error?.let { showError(it) }
+        })
+
+        viewModel.loading.observe(viewLifecycleOwner, { isLoading ->
+            showLoading(isLoading)
+        })
+
+        viewModel.findEvents()
     }
 
     private fun setEventData(listEvents: List<ListEventsItem>) {
-        val adapter = EventAdapter()
+        val adapter = EventAdapter { event ->
+            val action = UpcomingFragmentDirections.actionUpcomingFragmentToDetailEvent(event)
+            findNavController().navigate(action)
+        }
         adapter.submitList(listEvents)
         binding.recycleUpcoming.adapter = adapter
     }
 
-
     private fun showLoading(isLoading: Boolean) {
         binding.ProgressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+
+    private fun showError(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 
     override fun onDestroyView() {
@@ -90,4 +80,3 @@ class UpcomingFragment : Fragment() {
         _binding = null
     }
 }
-

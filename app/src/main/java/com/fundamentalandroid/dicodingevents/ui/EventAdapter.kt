@@ -9,24 +9,31 @@ import com.bumptech.glide.Glide
 import com.fundamentalandroid.dicodingevents.data.respons.ListEventsItem
 import com.fundamentalandroid.dicodingevents.databinding.ItemEventBinding
 
-class EventAdapter : ListAdapter<ListEventsItem, EventAdapter.MyViewHolder>(DIFF_CALLBACK) {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+class EventAdapter(
+    private val navigateToDetailEvent: (ListEventsItem) -> Unit
+) : ListAdapter<ListEventsItem, EventAdapter.EventViewHolder>(DIFF_CALLBACK) {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
         val binding = ItemEventBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return MyViewHolder(binding)
+        return EventViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
         val event = getItem(position)
         holder.bind(event)
     }
 
-    class MyViewHolder(private val binding: ItemEventBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class EventViewHolder(private val binding: ItemEventBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(event: ListEventsItem) {
             binding.eventTitle.text = event.name
 
             Glide.with(binding.eventImg.context)
                 .load(event.mediaCover)
                 .into(binding.eventImg)
+
+            itemView.setOnClickListener {
+                navigateToDetailEvent(event)
+            }
         }
     }
 
