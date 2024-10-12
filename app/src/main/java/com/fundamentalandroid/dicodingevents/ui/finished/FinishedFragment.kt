@@ -1,32 +1,25 @@
 package com.fundamentalandroid.dicodingevents.ui.finished
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.navigation.fragment.findNavController
-import com.fundamentalandroid.dicodingevents.data.respons.EventResponse
 import com.fundamentalandroid.dicodingevents.data.respons.ListEventsItem
-import com.fundamentalandroid.dicodingevents.data.retrofit.ApiConfig
 import com.fundamentalandroid.dicodingevents.databinding.FragmentFinishedBinding
 import com.fundamentalandroid.dicodingevents.ui.EventAdapter
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class FinishedFragment : Fragment() {
 
     private var _binding: FragmentFinishedBinding? = null
     private val binding get() = _binding!!
 
-    companion object {
-        private const val TAG = "FinishedFragment"
-    }
+    private lateinit var viewModel: FinishedViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,46 +33,29 @@ class FinishedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel = ViewModelProvider(this).get(FinishedViewModel::class.java)
+
         val layoutManager = LinearLayoutManager(context)
         binding.recycleFinished.layoutManager = layoutManager
         val itemDecoration = DividerItemDecoration(requireContext(), layoutManager.orientation)
         binding.recycleFinished.addItemDecoration(itemDecoration)
 
-        findEvent()
-    }
-
-    private fun findEvent() {
-        showLoading(true)
-        val client = ApiConfig.getApiService().getEvents(0)
-        client.enqueue(object : Callback<EventResponse> {
-            override fun onResponse(
-                call: Call<EventResponse>,
-                response: Response<EventResponse>
-            ) {
-                showLoading(false)
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    if (responseBody != null && !responseBody.error) {
-                        setEventData(responseBody.listEvents)
-                    } else {
-                        Log.e(TAG, "Error: ${responseBody?.message}")
-                        showError("Gagal memuat data: ${responseBody?.message ?: "Terjadi kesalahan."}")
-                    }
-                } else {
-                    Log.e(TAG, "onFailure: ${response.message()}")
-                    showError("Kesalahan respons: ${response.message()}")
-                }
-            }
-
-            override fun onFailure(call: Call<EventResponse>, t: Throwable) {
-                showLoading(false)
-                Log.e(TAG, "onFailure: ${t.message}")
-                showError("Kesalahan jaringan: ${t.message ?: "Gagal memuat."}")
-            }
+        viewModel.finishedEvents.observe(viewLifecycleOwner, { events ->
+            setEventData(events)
         })
+
+        viewModel.errorMessage.observe(viewLifecycleOwner, { error ->
+            error?.let { showError(it) }
+        })
+
+        viewModel.loading.observe(viewLifecycleOwner, { isLoading ->
+            showLoading(isLoading)
+        })
+
+        viewModel.loadFinishedEvents()
     }
 
-    private fun setEventData(listEvents: List<ListEventsItem>) {
+    private fun setEventData(listEvents: List<ListEventsItem>?) {
         val adapter = EventAdapter { event ->
             val action = FinishedFragmentDirections.actionFinishedFragmentToDetailEvent(event)
             findNavController().navigate(action)

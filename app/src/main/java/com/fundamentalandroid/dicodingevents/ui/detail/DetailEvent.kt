@@ -10,8 +10,10 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
+import com.fundamentalandroid.dicodingevents.data.respons.ListEventsItem
 import com.fundamentalandroid.dicodingevents.databinding.FragmentDetailEventBinding
 
 class DetailEvent : Fragment() {
@@ -19,6 +21,7 @@ class DetailEvent : Fragment() {
     private var _binding: FragmentDetailEventBinding? = null
     private val binding get() = _binding!!
     private val args: DetailEventArgs by navArgs()
+    private lateinit var viewModel: DetailEventViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,12 +34,21 @@ class DetailEvent : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel = ViewModelProvider(this).get(DetailEventViewModel::class.java)
+
+        viewModel.setEventItem(args.eventItem)
+
         (requireActivity() as AppCompatActivity).supportActionBar?.apply {
             title = args.eventItem.name
             setDisplayHomeAsUpEnabled(true)
         }
 
-        val eventItem = args.eventItem
+        viewModel.eventItem.observe(viewLifecycleOwner) { eventItem ->
+            bindEventData(eventItem)
+        }
+    }
+
+    private fun bindEventData(eventItem: ListEventsItem) {
         binding.eventTitle.text = eventItem.name
         binding.eventInformation.text = HtmlCompat.fromHtml(
             eventItem.description,
