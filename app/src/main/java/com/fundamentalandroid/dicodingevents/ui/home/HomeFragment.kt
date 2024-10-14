@@ -55,21 +55,21 @@ class HomeFragment : Fragment() {
             adapter = finishedAdapter
         }
 
-        viewModel.upcomingEvents.observe(viewLifecycleOwner, { events ->
+        viewModel.upcomingEvents.observe(viewLifecycleOwner) { events ->
             upcomingAdapter.submitList(events)
-        })
+        }
 
-        viewModel.finishedEvents.observe(viewLifecycleOwner, { events ->
+        viewModel.finishedEvents.observe(viewLifecycleOwner) { events ->
             finishedAdapter.submitList(events)
-        })
+        }
 
-        viewModel.errorMessage.observe(viewLifecycleOwner, { error ->
+        viewModel.errorMessage.observe(viewLifecycleOwner) { error ->
             error?.let { showError(it) }
-        })
+        }
 
-        viewModel.loading.observe(viewLifecycleOwner, { isLoading ->
+        viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
             showLoading(isLoading)
-        })
+        }
 
         viewModel.loadEvents()
     }
