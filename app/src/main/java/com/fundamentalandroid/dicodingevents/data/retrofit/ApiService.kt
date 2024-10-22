@@ -8,6 +8,7 @@ import retrofit2.http.Query
 interface ApiService {
     @GET("events")
     fun getEvents(
-        @Query("active") active: Int
+        @Query("active") active: Int,
+        @Query("q") query: String? = null
     ): Call<EventResponse>
 }

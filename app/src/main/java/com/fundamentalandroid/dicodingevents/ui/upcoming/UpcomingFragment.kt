@@ -20,10 +20,6 @@ class UpcomingFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var viewModel: UpcomingViewModel
 
-    companion object {
-        private const val TAG = "UpcomingFragment"
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -36,24 +32,24 @@ class UpcomingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this).get(UpcomingViewModel::class.java)
+        viewModel = ViewModelProvider(this)[UpcomingViewModel::class.java]
 
         val layoutManager = LinearLayoutManager(context)
         binding.recycleUpcoming.layoutManager = layoutManager
         val itemDecoration = DividerItemDecoration(requireContext(), layoutManager.orientation)
         binding.recycleUpcoming.addItemDecoration(itemDecoration)
 
-        viewModel.events.observe(viewLifecycleOwner, { listEvents ->
+        viewModel.events.observe(viewLifecycleOwner) { listEvents ->
             setEventData(listEvents)
-        })
+        }
 
-        viewModel.errorMessage.observe(viewLifecycleOwner, { error ->
+        viewModel.errorMessage.observe(viewLifecycleOwner) { error ->
             error?.let { showError(it) }
-        })
+        }
 
-        viewModel.loading.observe(viewLifecycleOwner, { isLoading ->
+        viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
             showLoading(isLoading)
-        })
+        }
 
         viewModel.findEvents()
     }

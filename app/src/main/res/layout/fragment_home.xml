@@ -9,6 +9,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/searchLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:startIconDrawable="@drawable/ic_search"
+            app:endIconMode="clear_text"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/searchEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/cari_event"
+                android:inputType="text"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
         <TextView
             android:id="@+id/upcomingTitle"
             android:layout_width="match_parent"
@@ -16,9 +37,10 @@
             android:text="@string/descUp"
             android:paddingBottom="16dp"
             style="@style/description"
+            android:paddingTop="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/searchLayout" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerUpcoming"
@@ -46,7 +68,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="16dp"
-            android:text="@string/descUp"
+            android:text="@string/descFinished"
             style="@style/description"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

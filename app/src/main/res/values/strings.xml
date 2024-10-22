@@ -20,4 +20,6 @@
     <string name="owner">Owner:</string>
     <string name="button">Register</string>
     <string name="searchbar_hint">Masukkan kata</string>
+    <string name="descFinished">Finished events</string>
+    <string name="cari_event">Cari event...</string>
 </resources>

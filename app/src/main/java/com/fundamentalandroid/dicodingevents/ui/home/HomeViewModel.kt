@@ -24,10 +24,11 @@ class HomeViewModel : ViewModel() {
     private val _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean> get() = _loading
 
-    fun loadEvents() {
+    fun loadEvents(query: String = "") {
         _loading.value = true
-        //aktif
-        ApiConfig.getApiService().getEvents(1).enqueue(object : Callback<EventResponse> {
+
+        // Load upcoming events (active = 1)
+        ApiConfig.getApiService().getEvents(1, query).enqueue(object : Callback<EventResponse> {
             override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
                 _loading.value = false
                 if (response.isSuccessful) {
@@ -37,14 +38,15 @@ class HomeViewModel : ViewModel() {
                     _errorMessage.value = "Gagal memuat acara mendatang: ${response.message()}"
                 }
             }
-            //selesai
+
             override fun onFailure(call: Call<EventResponse>, t: Throwable) {
                 _loading.value = false
                 _errorMessage.value = "Kesalahan jaringan: ${t.message ?: "Gagal memuat."}"
             }
         })
 
-        ApiConfig.getApiService().getEvents(0).enqueue(object : Callback<EventResponse> {
+        // Load finished events (active = 0)
+        ApiConfig.getApiService().getEvents(0, query).enqueue(object : Callback<EventResponse> {
             override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
                 if (response.isSuccessful) {
                     val finishedEvents = response.body()?.listEvents?.take(5) ?: emptyList()
@@ -58,5 +60,14 @@ class HomeViewModel : ViewModel() {
                 _errorMessage.value = "Kesalahan jaringan: ${t.message ?: "Gagal memuat."}"
             }
         })
+    }
+
+    // Add search function
+    fun searchEvents(query: String) {
+        if (query.isEmpty()) {
+            loadEvents() // Load all events if query is empty
+        } else {
+            loadEvents(query) // Load filtered events
+        }
     }
 }

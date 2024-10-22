@@ -20,7 +20,7 @@ import com.fundamentalandroid.dicodingevents.databinding.FragmentDetailEventBind
 class DetailEvent : Fragment() {
 
     private var _binding: FragmentDetailEventBinding? = null
-    private val binding get() = _binding!!
+    private val binding get() = _binding ?: throw IllegalStateException("Binding is not initialized")
     private val args: DetailEventArgs by navArgs()
     private lateinit var viewModel: DetailEventViewModel
 
@@ -35,7 +35,7 @@ class DetailEvent : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this).get(DetailEventViewModel::class.java)
+        viewModel = ViewModelProvider(this)[DetailEventViewModel::class.java]
 
         viewModel.setEventItem(args.eventItem)
 
@@ -44,6 +44,7 @@ class DetailEvent : Fragment() {
             setDisplayHomeAsUpEnabled(true)
         }
 
+        @Suppress("DEPRECATION")
         setHasOptionsMenu(true)
 
         viewModel.eventItem.observe(viewLifecycleOwner) { eventItem ->
@@ -52,31 +53,35 @@ class DetailEvent : Fragment() {
     }
 
     private fun bindEventData(eventItem: ListEventsItem) {
-        binding.eventTitle.text = eventItem.name
-        binding.eventInformation.text = HtmlCompat.fromHtml(
-            eventItem.description,
-            HtmlCompat.FROM_HTML_MODE_LEGACY
-        )
+        binding.apply {
+            eventTitle.text = eventItem.name
+            eventInformation.text = HtmlCompat.fromHtml(
+                eventItem.description,
+                HtmlCompat.FROM_HTML_MODE_LEGACY
+            )
 
-        Glide.with(this)
-            .load(eventItem.mediaCover)
-            .into(binding.eventImg)
+            Glide.with(this@DetailEvent)
+                .load(eventItem.mediaCover)
+                .into(eventImg)
 
-        binding.eventSummarize.text = eventItem.summary
-        binding.categoryText.text = eventItem.category
-        binding.ownerText.text = eventItem.ownerName
-        binding.cityText.text = eventItem.cityName
-        binding.quotaText.text = (eventItem.quota?.minus(eventItem.registrants)).toString()
-        binding.registrantsText.text = eventItem.registrants.toString()
-        binding.beginTimeText.text = eventItem.beginTime
-        binding.endTimeText.text = eventItem.endTime
+            eventSummarize.text = eventItem.summary
+            categoryText.text = eventItem.category
+            ownerText.text = eventItem.ownerName
+            cityText.text = eventItem.cityName
+            quotaText.text = (eventItem.quota.minus(eventItem.registrants)).toString()
+            registrantsText.text = eventItem.registrants.toString()
+            beginTimeText.text = eventItem.beginTime
+            endTimeText.text = eventItem.endTime
 
-        binding.eventButton.setOnClickListener {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(eventItem.link)))
+            eventButton.setOnClickListener {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(eventItem.link)))
+            }
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        @Suppress("DEPRECATION")
         return when (item.itemId) {
             android.R.id.home -> {
                 findNavController().navigateUp()
