@@ -22,4 +22,6 @@
     <string name="searchbar_hint">Masukkan kata</string>
     <string name="descFinished">Finished events</string>
     <string name="cari_event">Cari event...</string>
+    <string name="tittle_fav">Favorites</string>
+    <string name="tittle_settings">Settings</string>
 </resources>

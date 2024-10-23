@@ -36,6 +36,23 @@
     </fragment>
 
     <fragment
+        android:id="@+id/navigation_favorite"
+        android:name="com.fundamentalandroid.dicodingevents.ui.favorite.FavoriteFragment"
+        android:label="@string/tittle_fav"
+        tools:layout="@layout/fragment_favorite">
+        <action
+            android:id="@+id/action_favoriteFragment_to_detailEvent"
+            app:destination="@id/detailEvent" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="com.fundamentalandroid.dicodingevents.ui.settings.SettingsFragment"
+        android:label="@string/tittle_settings"
+        tools:layout="@layout/fragment_setiings">
+    </fragment>
+
+    <fragment
         android:id="@+id/detailEvent"
         android:name="com.fundamentalandroid.dicodingevents.ui.detail.DetailEvent"
         android:label="DetailEvent"

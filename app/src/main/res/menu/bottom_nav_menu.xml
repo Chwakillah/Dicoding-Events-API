@@ -15,4 +15,14 @@
         android:id="@+id/navigation_finished"
         android:icon="@drawable/ic_dashboard_black_24dp"
         android:title="@string/title_finished" />
+
+    <item
+        android:id="@+id/navigation_favorite"
+        android:icon="@drawable/baseline_favorite_24"
+        android:title="@string/tittle_fav" />
+
+    <item
+        android:id="@+id/navigation_settings"
+        android:icon="@drawable/baseline_settings_24"
+        android:title="@string/tittle_settings" />
 </menu>

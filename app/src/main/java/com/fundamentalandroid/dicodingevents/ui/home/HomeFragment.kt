@@ -89,7 +89,8 @@ class HomeFragment : Fragment() {
             findNavController().navigate(action)
         }
         binding.recyclerUpcoming.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = upcomingAdapter
         }
 
