@@ -1,0 +1,28 @@
+package com.fundamentalandroid.dicodingevents.repository
+
+import android.app.Application
+import androidx.lifecycle.LiveData
+import com.fundamentalandroid.dicodingevents.db.FavoriteDao
+import com.fundamentalandroid.dicodingevents.db.FavoriteEntity
+import com.fundamentalandroid.dicodingevents.db.FavoriteRoomDatabase
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+
+class FavoriteRepository(application: Application) {
+    private val mFavoriteDao: FavoriteDao
+    private val executorService: ExecutorService = Executors.newSingleThreadExecutor()
+    init {
+        val db = FavoriteRoomDatabase.getDatabase(application)
+        mFavoriteDao = db.favoriteDao()
+    }
+    fun getAllNotes(): LiveData<List<FavoriteEntity>> = mFavoriteDao.getAllNotes()
+    fun insert(favoriteEntity: FavoriteEntity) {
+        executorService.execute { mFavoriteDao.insert(favoriteEntity) }
+    }
+    fun delete(favoriteEntity: FavoriteEntity) {
+        executorService.execute { mFavoriteDao.delete(favoriteEntity) }
+    }
+    fun update(favoriteEntity: FavoriteEntity) {
+        executorService.execute { mFavoriteDao.update(favoriteEntity) }
+    }
+}

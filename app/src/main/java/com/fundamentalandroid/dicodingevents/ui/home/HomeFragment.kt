@@ -14,7 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.fundamentalandroid.dicodingevents.databinding.FragmentHomeBinding
-import com.fundamentalandroid.dicodingevents.ui.EventAdapter
+import com.fundamentalandroid.dicodingevents.ui.adapter.EventAdapter
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

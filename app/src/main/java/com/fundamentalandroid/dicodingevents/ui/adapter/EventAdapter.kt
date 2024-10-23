@@ -1,4 +1,4 @@
-package com.fundamentalandroid.dicodingevents.ui
+package com.fundamentalandroid.dicodingevents.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

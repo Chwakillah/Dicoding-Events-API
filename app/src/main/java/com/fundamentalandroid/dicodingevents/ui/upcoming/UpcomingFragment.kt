@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.navigation.fragment.findNavController
 import com.fundamentalandroid.dicodingevents.data.respons.ListEventsItem
 import com.fundamentalandroid.dicodingevents.databinding.FragmentUpcomingBinding
-import com.fundamentalandroid.dicodingevents.ui.EventAdapter
+import com.fundamentalandroid.dicodingevents.ui.adapter.EventAdapter
 
 class UpcomingFragment : Fragment() {
 
