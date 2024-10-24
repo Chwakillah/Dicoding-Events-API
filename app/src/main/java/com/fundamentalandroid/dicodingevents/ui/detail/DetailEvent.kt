@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
+import com.fundamentalandroid.dicodingevents.R
 import com.fundamentalandroid.dicodingevents.data.respons.ListEventsItem
 import com.fundamentalandroid.dicodingevents.db.FavoriteEntity
 import com.fundamentalandroid.dicodingevents.databinding.FragmentDetailEventBinding
@@ -52,10 +53,19 @@ class DetailEvent : Fragment() {
             bindEventData(eventItem)
         }
 
+        viewModel.isFavorited.observe(viewLifecycleOwner) { isFavorited ->
+            if (isFavorited) {
+                binding.fab.setImageResource(R.drawable.baseline_favorite_24)
+            } else {
+                binding.fab.setImageResource(R.drawable.baseline_favorite_border_24)
+            }
+        }
+
         binding.fab.setOnClickListener {
             toggleFavorite()
         }
     }
+
 
 
     private fun bindEventData(eventItem: ListEventsItem) {
@@ -96,8 +106,10 @@ class DetailEvent : Fragment() {
         viewModel.isFavorited.observe(viewLifecycleOwner) { isFavorited ->
             if (isFavorited) {
                 viewModel.delete(favoriteEntity)
+                binding.fab.setImageResource(R.drawable.baseline_favorite_border_24)
             } else {
                 viewModel.insert(favoriteEntity)
+                binding.fab.setImageResource(R.drawable.baseline_favorite_24)
             }
         }
     }
