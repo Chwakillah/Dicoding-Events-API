@@ -15,7 +15,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.fundamentalandroid.dicodingevents.data.respons.ListEventsItem
+import com.fundamentalandroid.dicodingevents.db.FavoriteEntity
 import com.fundamentalandroid.dicodingevents.databinding.FragmentDetailEventBinding
+import com.fundamentalandroid.dicodingevents.ui.helper.ViewModelFactory
 
 class DetailEvent : Fragment() {
 
@@ -35,7 +37,7 @@ class DetailEvent : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this)[DetailEventViewModel::class.java]
+        viewModel = ViewModelProvider(this, ViewModelFactory.getInstance(requireActivity().application))[DetailEventViewModel::class.java]
 
         viewModel.setEventItem(args.eventItem)
 
@@ -44,13 +46,17 @@ class DetailEvent : Fragment() {
             setDisplayHomeAsUpEnabled(true)
         }
 
-        @Suppress("DEPRECATION")
         setHasOptionsMenu(true)
 
         viewModel.eventItem.observe(viewLifecycleOwner) { eventItem ->
             bindEventData(eventItem)
         }
+
+        binding.fab.setOnClickListener {
+            toggleFavorite()
+        }
     }
+
 
     private fun bindEventData(eventItem: ListEventsItem) {
         binding.apply {
@@ -68,7 +74,7 @@ class DetailEvent : Fragment() {
             categoryText.text = eventItem.category
             ownerText.text = eventItem.ownerName
             cityText.text = eventItem.cityName
-            quotaText.text = (eventItem.quota.minus(eventItem.registrants)).toString()
+            quotaText.text = (eventItem.quota - eventItem.registrants).toString()
             registrantsText.text = eventItem.registrants.toString()
             beginTimeText.text = eventItem.beginTime
             endTimeText.text = eventItem.endTime
@@ -79,9 +85,24 @@ class DetailEvent : Fragment() {
         }
     }
 
-    @Deprecated("Deprecated in Java")
+    private fun toggleFavorite() {
+        val eventItem = viewModel.eventItem.value ?: return
+        val favoriteEntity = FavoriteEntity(
+            id = eventItem.id,
+            name = eventItem.name,
+            mediaCover = eventItem.mediaCover
+        )
+
+        viewModel.isFavorited.observe(viewLifecycleOwner) { isFavorited ->
+            if (isFavorited) {
+                viewModel.delete(favoriteEntity)
+            } else {
+                viewModel.insert(favoriteEntity)
+            }
+        }
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        @Suppress("DEPRECATION")
         return when (item.itemId) {
             android.R.id.home -> {
                 findNavController().navigateUp()

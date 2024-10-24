@@ -2,6 +2,7 @@ package com.fundamentalandroid.dicodingevents.repository
 
 import android.app.Application
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.fundamentalandroid.dicodingevents.db.FavoriteDao
 import com.fundamentalandroid.dicodingevents.db.FavoriteEntity
 import com.fundamentalandroid.dicodingevents.db.FavoriteRoomDatabase
@@ -11,18 +12,32 @@ import java.util.concurrent.Executors
 class FavoriteRepository(application: Application) {
     private val mFavoriteDao: FavoriteDao
     private val executorService: ExecutorService = Executors.newSingleThreadExecutor()
+
     init {
         val db = FavoriteRoomDatabase.getDatabase(application)
         mFavoriteDao = db.favoriteDao()
     }
-    fun getAllNotes(): LiveData<List<FavoriteEntity>> = mFavoriteDao.getAllNotes()
+
+    fun getAllNotes(): LiveData<List<FavoriteEntity>> = mFavoriteDao.getAllFavorites()
+
     fun insert(favoriteEntity: FavoriteEntity) {
         executorService.execute { mFavoriteDao.insert(favoriteEntity) }
     }
+
     fun delete(favoriteEntity: FavoriteEntity) {
         executorService.execute { mFavoriteDao.delete(favoriteEntity) }
     }
+
     fun update(favoriteEntity: FavoriteEntity) {
         executorService.execute { mFavoriteDao.update(favoriteEntity) }
+    }
+
+    fun isFavorited(eventId: Int): LiveData<Boolean> {
+        val result = MutableLiveData<Boolean>()
+        executorService.execute {
+            val favorite = mFavoriteDao.getFavoriteById(eventId)
+            result.postValue(favorite != null)
+        }
+        return result
     }
 }

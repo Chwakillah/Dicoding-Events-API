@@ -6,17 +6,16 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
-@Entity
+@Entity(tableName = "favoriteentity")
 @Parcelize
 data class FavoriteEntity(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     @ColumnInfo(name = "id")
-    var id: Int = 0,
+    var id: Int,
 
     @ColumnInfo(name = "name")
     var name: String? = null,
 
-    @ColumnInfo(name = "mediacover")
-    var mediacover: String? = null,
-
+    @ColumnInfo(name = "mediaCover")
+    var mediaCover: String? = null,
 ) : Parcelable

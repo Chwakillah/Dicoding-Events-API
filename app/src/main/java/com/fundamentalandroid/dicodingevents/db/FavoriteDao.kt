@@ -20,5 +20,8 @@ interface FavoriteDao {
     fun delete(favoriteEntity: FavoriteEntity)
 
     @Query("SELECT * from favoriteentity ORDER BY id ASC")
-    fun getAllNotes(): LiveData<List<FavoriteEntity>>
+    fun getAllFavorites(): LiveData<List<FavoriteEntity>>
+
+    @Query("SELECT * FROM favoriteentity WHERE id = :eventId LIMIT 1")
+    fun getFavoriteById(eventId: Int): FavoriteEntity?
 }
