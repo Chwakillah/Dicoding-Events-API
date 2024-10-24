@@ -8,5 +8,5 @@ import com.fundamentalandroid.dicodingevents.repository.FavoriteRepository
 
 class FavoriteViewModel(application: Application) : ViewModel() {
     private val mFavoriteRepository: FavoriteRepository = FavoriteRepository(application)
-    fun getAllNotes(): LiveData<List<FavoriteEntity>> = mFavoriteRepository.getAllNotes()
+    fun getAllFavorites(): LiveData<List<FavoriteEntity>> = mFavoriteRepository.getAllFavorites()
 }

@@ -100,7 +100,18 @@ class DetailEvent : Fragment() {
         val favoriteEntity = FavoriteEntity(
             id = eventItem.id,
             name = eventItem.name,
-            mediaCover = eventItem.mediaCover
+            mediaCover = eventItem.mediaCover,
+            summary = eventItem.summary,
+            description = eventItem.description,
+            ownerName = eventItem.ownerName,
+            cityName = eventItem.cityName,
+            quota = eventItem.quota,
+            registrants = eventItem.registrants,
+            beginTime = eventItem.beginTime,
+            endTime = eventItem.endTime,
+            category = eventItem.category,
+            link = eventItem.link,
+            imageLogo = eventItem.imageLogo
         )
 
         viewModel.isFavorited.observe(viewLifecycleOwner) { isFavorited ->
