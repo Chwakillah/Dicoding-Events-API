@@ -26,6 +26,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recycleFavorite" />
+        app:layout_constraintBottom_toTopOf="@+id/recycleFavorite" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

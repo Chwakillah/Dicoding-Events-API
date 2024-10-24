@@ -1,4 +1,4 @@
-package com.fundamentalandroid.dicodingevents.db
+package com.fundamentalandroid.dicodingevents.data.local.entity
 
 import android.os.Parcelable
 import androidx.room.ColumnInfo

@@ -4,8 +4,8 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.fundamentalandroid.dicodingevents.data.respons.ListEventsItem
-import com.fundamentalandroid.dicodingevents.db.FavoriteEntity
+import com.fundamentalandroid.dicodingevents.data.remote.respons.ListEventsItem
+import com.fundamentalandroid.dicodingevents.data.local.entity.FavoriteEntity
 import com.fundamentalandroid.dicodingevents.repository.FavoriteRepository
 
 class DetailEventViewModel(application: Application) : ViewModel() {
@@ -17,7 +17,7 @@ class DetailEventViewModel(application: Application) : ViewModel() {
     private val _isFavorited = MutableLiveData<Boolean>()
     val isFavorited: LiveData<Boolean> get() = _isFavorited
 
-    private fun checkIfFavorited(eventId: Int) {  // Change to Int
+    private fun checkIfFavorited(eventId: Int) {
         mFavoriteRepository.isFavorited(eventId).observeForever { isFavored ->
             _isFavorited.value = isFavored
         }

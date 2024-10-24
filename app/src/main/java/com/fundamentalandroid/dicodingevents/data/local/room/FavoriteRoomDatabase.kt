@@ -1,9 +1,10 @@
-package com.fundamentalandroid.dicodingevents.db
+package com.fundamentalandroid.dicodingevents.data.local.room
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.fundamentalandroid.dicodingevents.data.local.entity.FavoriteEntity
 
 @Database(
     entities = [FavoriteEntity::class],

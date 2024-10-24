@@ -3,9 +3,9 @@ package com.fundamentalandroid.dicodingevents.repository
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.fundamentalandroid.dicodingevents.db.FavoriteDao
-import com.fundamentalandroid.dicodingevents.db.FavoriteEntity
-import com.fundamentalandroid.dicodingevents.db.FavoriteRoomDatabase
+import com.fundamentalandroid.dicodingevents.data.local.room.FavoriteDao
+import com.fundamentalandroid.dicodingevents.data.local.entity.FavoriteEntity
+import com.fundamentalandroid.dicodingevents.data.local.room.FavoriteRoomDatabase
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 

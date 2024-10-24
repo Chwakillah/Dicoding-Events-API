@@ -1,6 +1,6 @@
-package com.fundamentalandroid.dicodingevents.data.retrofit
+package com.fundamentalandroid.dicodingevents.data.remote.retrofit
 
-import com.fundamentalandroid.dicodingevents.data.respons.EventResponse
+import com.fundamentalandroid.dicodingevents.data.remote.respons.EventResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query

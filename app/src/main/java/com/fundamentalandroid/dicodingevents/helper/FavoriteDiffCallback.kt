@@ -1,7 +1,7 @@
-package com.fundamentalandroid.dicodingevents.ui.helper
+package com.fundamentalandroid.dicodingevents.helper
 
 import androidx.recyclerview.widget.DiffUtil
-import com.fundamentalandroid.dicodingevents.db.FavoriteEntity
+import com.fundamentalandroid.dicodingevents.data.local.entity.FavoriteEntity
 
 class FavoriteDiffCallback(
     private val oldFavoriteList: List<FavoriteEntity>,

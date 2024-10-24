@@ -1,4 +1,4 @@
-package com.fundamentalandroid.dicodingevents.ui.helper
+package com.fundamentalandroid.dicodingevents.helper
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
@@ -6,18 +6,18 @@ import androidx.lifecycle.ViewModelProvider
 import com.fundamentalandroid.dicodingevents.ui.detail.DetailEventViewModel
 import com.fundamentalandroid.dicodingevents.ui.favorite.FavoriteViewModel
 
-class ViewModelFactory private constructor(private val mApplication: Application) : ViewModelProvider.NewInstanceFactory() {
+class FavoriteViewModelFactory private constructor(private val mApplication: Application) : ViewModelProvider.NewInstanceFactory() {
     companion object {
         @Volatile
-        private var INSTANCE: ViewModelFactory? = null
+        private var INSTANCE: FavoriteViewModelFactory? = null
         @JvmStatic
-        fun getInstance(application: Application): ViewModelFactory {
+        fun getInstance(application: Application): FavoriteViewModelFactory {
             if (INSTANCE == null) {
-                synchronized(ViewModelFactory::class.java) {
-                    INSTANCE = ViewModelFactory(application)
+                synchronized(FavoriteViewModelFactory::class.java) {
+                    INSTANCE = FavoriteViewModelFactory(application)
                 }
             }
-            return INSTANCE as ViewModelFactory
+            return INSTANCE as FavoriteViewModelFactory
         }
     }
 

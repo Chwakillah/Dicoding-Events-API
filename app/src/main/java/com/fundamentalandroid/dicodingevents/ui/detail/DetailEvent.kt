@@ -15,10 +15,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.fundamentalandroid.dicodingevents.R
-import com.fundamentalandroid.dicodingevents.data.respons.ListEventsItem
-import com.fundamentalandroid.dicodingevents.db.FavoriteEntity
+import com.fundamentalandroid.dicodingevents.data.local.entity.FavoriteEntity
+import com.fundamentalandroid.dicodingevents.data.remote.respons.ListEventsItem
 import com.fundamentalandroid.dicodingevents.databinding.FragmentDetailEventBinding
-import com.fundamentalandroid.dicodingevents.ui.helper.ViewModelFactory
+import com.fundamentalandroid.dicodingevents.helper.FavoriteViewModelFactory
 
 class DetailEvent : Fragment() {
 
@@ -38,7 +38,7 @@ class DetailEvent : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this, ViewModelFactory.getInstance(requireActivity().application))[DetailEventViewModel::class.java]
+        viewModel = ViewModelProvider(this, FavoriteViewModelFactory.getInstance(requireActivity().application))[DetailEventViewModel::class.java]
 
         viewModel.setEventItem(args.eventItem)
 

@@ -49,7 +49,7 @@
         android:id="@+id/navigation_settings"
         android:name="com.fundamentalandroid.dicodingevents.ui.settings.SettingsFragment"
         android:label="@string/tittle_settings"
-        tools:layout="@layout/fragment_setiings">
+        tools:layout="@layout/fragment_settings">
     </fragment>
 
     <fragment
@@ -59,7 +59,7 @@
         tools:layout="@layout/fragment_detail_event">
         <argument
             android:name="eventItem"
-            app:argType="com.fundamentalandroid.dicodingevents.data.respons.ListEventsItem"
+            app:argType="com.fundamentalandroid.dicodingevents.data.remote.respons.ListEventsItem"
             app:nullable="false" />
     </fragment>
 

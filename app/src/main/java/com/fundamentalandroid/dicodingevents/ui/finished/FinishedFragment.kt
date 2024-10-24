@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.navigation.fragment.findNavController
-import com.fundamentalandroid.dicodingevents.data.respons.ListEventsItem
+import com.fundamentalandroid.dicodingevents.data.remote.respons.ListEventsItem
 import com.fundamentalandroid.dicodingevents.databinding.FragmentFinishedBinding
 import com.fundamentalandroid.dicodingevents.ui.adapter.EventAdapter
 

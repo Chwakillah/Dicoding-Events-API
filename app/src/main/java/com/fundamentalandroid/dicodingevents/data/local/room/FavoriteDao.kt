@@ -1,4 +1,4 @@
-package com.fundamentalandroid.dicodingevents.db
+package com.fundamentalandroid.dicodingevents.data.local.room
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
@@ -7,6 +7,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.fundamentalandroid.dicodingevents.data.local.entity.FavoriteEntity
 
 @Dao
 interface FavoriteDao {

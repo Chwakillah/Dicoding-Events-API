@@ -4,14 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.fundamentalandroid.dicodingevents.data.respons.ListEventsItem
+import com.fundamentalandroid.dicodingevents.data.remote.respons.ListEventsItem
 import com.fundamentalandroid.dicodingevents.databinding.FragmentFavoriteBinding
 import com.fundamentalandroid.dicodingevents.ui.adapter.EventAdapter
-import com.fundamentalandroid.dicodingevents.ui.helper.ViewModelFactory
+import com.fundamentalandroid.dicodingevents.helper.FavoriteViewModelFactory
 
 class FavoriteFragment : Fragment() {
     private var _binding: FragmentFavoriteBinding? = null
@@ -41,7 +42,7 @@ class FavoriteFragment : Fragment() {
     private fun initializeViewModel() {
         viewModel = ViewModelProvider(
             this,
-            ViewModelFactory.getInstance(requireActivity().application)
+            FavoriteViewModelFactory.getInstance(requireActivity().application)
         )[FavoriteViewModel::class.java]
     }
 
@@ -60,8 +61,26 @@ class FavoriteFragment : Fragment() {
 
     private fun observeFavorites() {
         showLoading(true)
+
+        // Observe loading state
+        viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
+            showLoading(isLoading)
+        }
+
+        // Observe error message
+        viewModel.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
+            if (!errorMessage.isNullOrEmpty()) {
+                showLoading(false)
+                // Show error message to the user
+                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // Observe favorite list
         viewModel.getAllFavorites().observe(viewLifecycleOwner) { favorites ->
             showLoading(false)
+
+            // Convert favorite list to ListEventsItem
             try {
                 val items = favorites.map { favorite ->
                     ListEventsItem(
@@ -84,6 +103,7 @@ class FavoriteFragment : Fragment() {
                 eventAdapter.submitList(items)
             } catch (e: Exception) {
                 e.printStackTrace()
+                Toast.makeText(requireContext(), "Kesalahan saat memuat data.", Toast.LENGTH_SHORT).show()
             }
         }
     }

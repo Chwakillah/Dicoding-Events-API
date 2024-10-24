@@ -1,4 +1,4 @@
-package com.fundamentalandroid.dicodingevents.data.retrofit
+package com.fundamentalandroid.dicodingevents.data.remote.retrofit
 
 import com.fundamentalandroid.dicodingevents.BuildConfig
 import okhttp3.OkHttpClient
