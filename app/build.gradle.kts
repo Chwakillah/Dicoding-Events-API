@@ -79,12 +79,15 @@ dependencies {
     implementation(libs.androidx.activity.ktx)
 
     // Room
-    implementation("androidx.room:room-runtime:2.6.1")
-    ksp("androidx.room:room-compiler:2.6.1")
-    implementation("androidx.room:room-ktx:2.6.1")
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
 
     //data store
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
+
+    //workmanager
+    implementation(libs.androidx.work.runtime)
+    implementation(libs.android.async.http)
 }

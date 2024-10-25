@@ -28,10 +28,6 @@ class FavoriteRepository(application: Application) {
         executorService.execute { mFavoriteDao.delete(favoriteEntity) }
     }
 
-    fun update(favoriteEntity: FavoriteEntity) {
-        executorService.execute { mFavoriteDao.update(favoriteEntity) }
-    }
-
     fun isFavorited(eventId: Int): LiveData<Boolean> {
         val result = MutableLiveData<Boolean>()
         executorService.execute {

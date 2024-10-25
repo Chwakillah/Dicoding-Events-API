@@ -11,4 +11,5 @@ interface ApiService {
         @Query("active") active: Int,
         @Query("q") query: String? = null
     ): Call<EventResponse>
+
 }

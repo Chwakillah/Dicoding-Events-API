@@ -19,7 +19,7 @@ class FavoriteViewModel(application: Application) : ViewModel() {
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> get() = _errorMessage
 
-    private val context: Context = application.applicationContext 
+    private val context: Context = application.applicationContext
 
     private fun isNetworkAvailable(): Boolean {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -38,7 +38,7 @@ class FavoriteViewModel(application: Application) : ViewModel() {
         } else {
             _loading.value = false
             _errorMessage.value = "Tidak ada koneksi internet."
-            return MutableLiveData(emptyList()) // Return an empty list when no connection
+            return MutableLiveData(emptyList())
         }
     }
 }

@@ -3,13 +3,10 @@
     <string name="title_home">Home</string>
     <string name="title_finished">Finished</string>
     <string name="title_upcoming">Upcoming</string>
-    <string name="title">Dicoding Events</string>
     <string name="descUp">Upcoming events</string>
-    <string name="descFin">Upcoming events</string>
     <string name="event_image">Event image</string>
     <string name="event_title">Event Title</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="category">Category:</string>
     <string name="seminar">Seminar</string>
     <string name="end_time">End Time:</string>
@@ -19,10 +16,10 @@
     <string name="city">City:</string>
     <string name="owner">Owner:</string>
     <string name="button">Register</string>
-    <string name="searchbar_hint">Masukkan kata</string>
     <string name="descFinished">Finished events</string>
-    <string name="cari_event">Cari event...</string>
+    <string name="cari_event">Cari event…</string>
     <string name="tittle_fav">Favorites</string>
     <string name="tittle_settings">Settings</string>
     <string name="dark_mode">Dark mode</string>
+    <string name="notifikasi">Hidupkan Notifikasi</string>
 </resources>
