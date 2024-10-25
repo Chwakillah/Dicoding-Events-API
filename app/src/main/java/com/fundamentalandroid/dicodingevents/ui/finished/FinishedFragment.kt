@@ -33,24 +33,24 @@ class FinishedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this).get(FinishedViewModel::class.java)
+        viewModel = ViewModelProvider(this)[FinishedViewModel::class.java]
 
         val layoutManager = LinearLayoutManager(context)
         binding.recycleFinished.layoutManager = layoutManager
         val itemDecoration = DividerItemDecoration(requireContext(), layoutManager.orientation)
         binding.recycleFinished.addItemDecoration(itemDecoration)
 
-        viewModel.finishedEvents.observe(viewLifecycleOwner, { events ->
+        viewModel.finishedEvents.observe(viewLifecycleOwner) { events ->
             setEventData(events)
-        })
+        }
 
-        viewModel.errorMessage.observe(viewLifecycleOwner, { error ->
+        viewModel.errorMessage.observe(viewLifecycleOwner) { error ->
             error?.let { showError(it) }
-        })
+        }
 
-        viewModel.loading.observe(viewLifecycleOwner, { isLoading ->
+        viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
             showLoading(isLoading)
-        })
+        }
 
         viewModel.loadFinishedEvents()
     }

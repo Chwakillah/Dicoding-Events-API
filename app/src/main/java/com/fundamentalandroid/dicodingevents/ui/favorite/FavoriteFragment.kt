@@ -62,25 +62,20 @@ class FavoriteFragment : Fragment() {
     private fun observeFavorites() {
         showLoading(true)
 
-        // Observe loading state
         viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
             showLoading(isLoading)
         }
 
-        // Observe error message
         viewModel.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
             if (!errorMessage.isNullOrEmpty()) {
                 showLoading(false)
-                // Show error message to the user
                 Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
             }
         }
 
-        // Observe favorite list
         viewModel.getAllFavorites().observe(viewLifecycleOwner) { favorites ->
             showLoading(false)
 
-            // Convert favorite list to ListEventsItem
             try {
                 val items = favorites.map { favorite ->
                     ListEventsItem(
@@ -107,6 +102,7 @@ class FavoriteFragment : Fragment() {
             }
         }
     }
+
 
     private fun showLoading(isLoading: Boolean) {
         binding.ProgressBar.visibility = if (isLoading) View.VISIBLE else View.GONE

@@ -8,7 +8,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.fundamentalandroid.dicodingevents.data.local.entity.FavoriteEntity
-import com.fundamentalandroid.dicodingevents.repository.FavoriteRepository
+import com.fundamentalandroid.dicodingevents.data.repository.FavoriteRepository
 
 class FavoriteViewModel(application: Application) : ViewModel() {
     private val mFavoriteRepository: FavoriteRepository = FavoriteRepository(application)
@@ -42,4 +42,5 @@ class FavoriteViewModel(application: Application) : ViewModel() {
         }
     }
 }
+
 
