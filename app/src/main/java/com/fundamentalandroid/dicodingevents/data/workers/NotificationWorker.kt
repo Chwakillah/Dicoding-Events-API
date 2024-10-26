@@ -1,14 +1,21 @@
 package com.fundamentalandroid.dicodingevents.data.workers
 
+import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.fundamentalandroid.dicodingevents.R
+import com.fundamentalandroid.dicodingevents.ui.main.MainActivity
 import org.json.JSONObject
 import java.net.URL
 import java.text.SimpleDateFormat
@@ -24,32 +31,24 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     }
 
     override fun doWork(): Result {
-        Log.d(TAG, "doWork: Worker Started")
         return try {
-            Log.d(TAG, "doWork: Fetching event data...")
             val eventData = getEventData()
             if (eventData != null) {
-                Log.d(TAG, "doWork: Event data fetched successfully: ${eventData.first}")
                 showNotification(eventData)
-                Log.d(TAG, "doWork: Notification shown successfully")
                 Result.success()
             } else {
-                Log.e(TAG, "doWork: Failed to fetch event data")
                 Result.failure()
             }
         } catch (e: Exception) {
-            Log.e(TAG, "doWork: Error executing worker", e)
             Result.failure()
         }
     }
 
     private fun getEventData(): Pair<String, String>? {
         try {
-            Log.d(TAG, "getEventData: Starting API call")
             val url = URL("https://event-api.dicoding.dev/events?active=-1&limit=1")
             val connection = url.openConnection()
             val response = connection.getInputStream().bufferedReader().use { it.readText() }
-            Log.d(TAG, "getEventData: API Response received: $response")
 
             val jsonObject = JSONObject(response)
             val events = jsonObject.getJSONArray("listEvents")
@@ -63,7 +62,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 val displayFormat = SimpleDateFormat("dd MMMM yyyy, HH:mm", Locale.getDefault())
                 val formattedTime = eventTime?.let { displayFormat.format(it) } ?: ""
 
-                Log.d(TAG, "getEventData: Parsed event - Name: $eventName, Time: $formattedTime")
                 return Pair(eventName, formattedTime)
             }
         } catch (e: Exception) {
@@ -73,33 +71,68 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     }
 
     private fun showNotification(eventData: Pair<String, String>) {
-        Log.d(TAG, "showNotification: Creating notification for event: ${eventData.first}")
-        val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                CHANNEL_ID,
-                CHANNEL_NAME,
-                NotificationManager.IMPORTANCE_HIGH
-            ).apply {
-                description = "Channel for Event Reminders"
-                enableLights(true)
-                enableVibration(true)
+        try {
+            val intent = Intent(applicationContext, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             }
-            notificationManager.createNotificationChannel(channel)
-            Log.d(TAG, "showNotification: Notification channel created")
+
+            val pendingIntent = PendingIntent.getActivity(
+                applicationContext,
+                0,
+                intent,
+                PendingIntent.FLAG_IMMUTABLE
+            )
+
+            Log.d(TAG, "showNotification: Creating notification for event: ${eventData.first}")
+            val notificationManager = NotificationManagerCompat.from(applicationContext)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val channel = NotificationChannel(
+                    CHANNEL_ID,
+                    CHANNEL_NAME,
+                    NotificationManager.IMPORTANCE_HIGH
+                ).apply {
+                    description = "Channel for Event Reminders"
+                    enableLights(true)
+                    enableVibration(true)
+                    setShowBadge(true)
+                }
+                val systemNotificationManager =
+                    applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                systemNotificationManager.createNotificationChannel(channel)
+                Log.d(TAG, "showNotification: Notification channel created")
+            }
+
+            val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setContentTitle("Event Reminder")
+                .setContentText(eventData.first)
+                .setStyle(NotificationCompat.BigTextStyle()
+                    .bigText("${eventData.first}\nWaktu: ${eventData.second}"))
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .build()
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (ActivityCompat.checkSelfPermission(
+                        applicationContext,
+                        Manifest.permission.POST_NOTIFICATIONS
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) {
+                    notificationManager.notify(NOTIFICATION_ID, notification)
+                    Log.d(TAG, "showNotification: Notification displayed")
+                } else {
+                    Log.e(TAG, "showNotification: Notification permission not granted")
+                }
+            } else {
+                notificationManager.notify(NOTIFICATION_ID, notification)
+                Log.d(TAG, "showNotification: Notification displayed")
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "showNotification: Error showing notification", e)
         }
-
-        val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle("Event Reminder")
-            .setContentText("${eventData.first} pada ${eventData.second}")
-            .setAutoCancel(true)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setDefaults(NotificationCompat.DEFAULT_ALL)
-            .build()
-
-        notificationManager.notify(NOTIFICATION_ID, notification)
-        Log.d(TAG, "showNotification: Notification displayed")
     }
 }

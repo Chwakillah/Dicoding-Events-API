@@ -1,12 +1,17 @@
 package com.fundamentalandroid.dicodingevents.ui.settings
 
+import android.Manifest
+import android.app.AlertDialog
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -16,10 +21,10 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.fundamentalandroid.dicodingevents.data.preferences.SettingPreferences
-import com.fundamentalandroid.dicodingevents.data.workers.NotificationWorker
 import com.fundamentalandroid.dicodingevents.databinding.FragmentSettingsBinding
 import com.fundamentalandroid.dicodingevents.helper.ViewModelFactory
 import com.fundamentalandroid.dicodingevents.ui.main.MainViewModel
+import com.fundamentalandroid.dicodingevents.data.workers.NotificationWorker
 import java.util.concurrent.TimeUnit
 import android.content.res.Configuration
 
@@ -31,6 +36,7 @@ class SettingsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var mainViewModel: MainViewModel
+    private var isInitialSetup = true
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,6 +48,8 @@ class SettingsFragment : Fragment() {
         val pref = SettingPreferences.getInstance(requireContext().dataStore)
         mainViewModel = ViewModelProvider(this, ViewModelFactory(pref))[MainViewModel::class.java]
 
+        binding.switchTheme.isEnabled = false
+
         setupThemeSwitch()
         setupReminderSwitch()
 
@@ -49,24 +57,34 @@ class SettingsFragment : Fragment() {
     }
 
     private fun setupThemeSwitch() {
+        binding.switchTheme.setOnCheckedChangeListener(null)
+
         mainViewModel.getThemeSettings().observe(viewLifecycleOwner) { isNightMode ->
-            if (binding.switchTheme.isChecked != isNightMode) {
-                binding.switchTheme.isChecked = isNightMode
-            }
+            try {
+                val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+                val systemIsNightMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
 
-            val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-            val expectedNightMode = if (isNightMode) Configuration.UI_MODE_NIGHT_YES else Configuration.UI_MODE_NIGHT_NO
+                if (isInitialSetup) {
+                    binding.switchTheme.isChecked = isNightMode
+                    isInitialSetup = false
+                }
 
-            if (currentNightMode != expectedNightMode) {
-                AppCompatDelegate.setDefaultNightMode(
-                    if (isNightMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
-                )
-            }
-        }
+                if (isNightMode != systemIsNightMode) {
+                    AppCompatDelegate.setDefaultNightMode(
+                        if (isNightMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+                    )
+                }
 
-        binding.switchTheme.setOnCheckedChangeListener { _, isChecked ->
-            if (mainViewModel.getThemeSettings().value != isChecked) {
-                mainViewModel.saveThemeSetting(isChecked)
+                binding.switchTheme.isEnabled = true
+
+                binding.switchTheme.setOnCheckedChangeListener { _, isChecked ->
+                    if (mainViewModel.getThemeSettings().value != isChecked) {
+                        mainViewModel.saveThemeSetting(isChecked)
+                    }
+                }
+            } catch (e: Exception) {
+                binding.switchTheme.isEnabled = true
+                e.printStackTrace()
             }
         }
     }
@@ -78,8 +96,46 @@ class SettingsFragment : Fragment() {
         }
 
         binding.switchNotification.setOnCheckedChangeListener { _: CompoundButton, isChecked: Boolean ->
-            mainViewModel.saveReminderSetting(isChecked)
-            setupDailyReminder(isChecked)
+            if (isChecked) {
+                if (ContextCompat.checkSelfPermission(
+                        requireContext(),
+                        Manifest.permission.POST_NOTIFICATIONS
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    requestNotificationPermission()
+                    binding.switchNotification.isChecked = false
+                } else {
+                    mainViewModel.saveReminderSetting(isChecked)
+                    setupDailyReminder(isChecked)
+                }
+            } else {
+                mainViewModel.saveReminderSetting(isChecked)
+                setupDailyReminder(isChecked)
+            }
+        }
+    }
+
+    private fun requestNotificationPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.POST_NOTIFICATIONS)) {
+            AlertDialog.Builder(requireContext())
+                .setTitle("Permission Needed")
+                .setMessage("This permission is needed to show notifications for event reminders.")
+                .setPositiveButton("OK") { _, _ ->
+                    ActivityCompat.requestPermissions(
+                        requireActivity(),
+                        arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                        0
+                    )
+                }
+                .setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss() }
+                .create()
+                .show()
+        } else {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                0
+            )
         }
     }
 
@@ -111,5 +167,4 @@ class SettingsFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
 }
