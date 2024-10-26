@@ -57,14 +57,14 @@ class HomeFragment : Fragment() {
         }
 
         binding.searchEditText.addTextChangedListener(object : TextWatcher {
-            private var searchEvents: Job? = null // Changed from searchJob to searchEvents
+            private var searchEvents: Job? = null
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
-                searchEvents?.cancel() // Use the updated variable name
+                searchEvents?.cancel()
                 searchEvents = lifecycleScope.launch {
-                    delay(500) // Debounce delay
+                    delay(500)
                     performSearch(s.toString())
                 }
             }

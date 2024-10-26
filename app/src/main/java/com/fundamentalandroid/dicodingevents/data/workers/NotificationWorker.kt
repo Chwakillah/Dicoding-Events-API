@@ -26,12 +26,10 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     override fun doWork(): Result {
         Log.d(TAG, "doWork: Worker Started")
         return try {
-            // Fetch event data
             Log.d(TAG, "doWork: Fetching event data...")
             val eventData = getEventData()
             if (eventData != null) {
                 Log.d(TAG, "doWork: Event data fetched successfully: ${eventData.first}")
-                // Show notification
                 showNotification(eventData)
                 Log.d(TAG, "doWork: Notification shown successfully")
                 Result.success()

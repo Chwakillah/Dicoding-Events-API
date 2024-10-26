@@ -1,5 +1,6 @@
 package com.fundamentalandroid.dicodingevents.ui.favorite
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
@@ -10,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import com.fundamentalandroid.dicodingevents.data.local.entity.FavoriteEntity
 import com.fundamentalandroid.dicodingevents.data.repository.FavoriteRepository
 
+@SuppressLint("StaticFieldLeak")
 class FavoriteViewModel(application: Application) : ViewModel() {
     private val mFavoriteRepository: FavoriteRepository = FavoriteRepository(application)
 
@@ -42,5 +44,4 @@ class FavoriteViewModel(application: Application) : ViewModel() {
         }
     }
 }
-
 

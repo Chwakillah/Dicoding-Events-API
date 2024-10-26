@@ -19,6 +19,7 @@ import com.fundamentalandroid.dicodingevents.data.local.entity.FavoriteEntity
 import com.fundamentalandroid.dicodingevents.data.remote.respons.ListEventsItem
 import com.fundamentalandroid.dicodingevents.databinding.FragmentDetailEventBinding
 import com.fundamentalandroid.dicodingevents.helper.FavoriteViewModelFactory
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class DetailEvent : Fragment() {
 
@@ -32,13 +33,19 @@ class DetailEvent : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentDetailEventBinding.inflate(inflater, container, false)
+        hideBottomNavigationView()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this, FavoriteViewModelFactory.getInstance(requireActivity().application))[DetailEventViewModel::class.java]
+        viewModel = ViewModelProvider(
+            this,
+            FavoriteViewModelFactory.getInstance(requireActivity().application)
+        )[DetailEventViewModel::class.java]
+
+        setupObservers()
 
         viewModel.setEventItem(args.eventItem)
 
@@ -49,24 +56,52 @@ class DetailEvent : Fragment() {
 
         setHasOptionsMenu(true)
 
-        viewModel.eventItem.observe(viewLifecycleOwner) { eventItem ->
-            bindEventData(eventItem)
-        }
-
-        viewModel.isFavorited.observe(viewLifecycleOwner) { isFavorited ->
-            if (isFavorited) {
-                binding.fab.setImageResource(R.drawable.baseline_favorite_24)
-            } else {
-                binding.fab.setImageResource(R.drawable.baseline_favorite_border_24)
-            }
-        }
-
         binding.fab.setOnClickListener {
             toggleFavorite()
         }
     }
 
+    private fun setupObservers() {
+        viewModel.eventItem.observe(viewLifecycleOwner) { eventItem ->
+            bindEventData(eventItem)
+        }
 
+        viewModel.isFavorited.observe(viewLifecycleOwner) { isFavorited ->
+            updateFavoriteIcon(isFavorited)
+        }
+
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            showLoading(isLoading)
+        }
+
+        viewModel.error.observe(viewLifecycleOwner) { error ->
+            error?.let { showError(it) }
+        }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.apply {
+            ProgressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+            eventDetail.alpha = if (isLoading) 0.5f else 1.0f
+            eventButton.isEnabled = !isLoading
+            fab.isEnabled = !isLoading
+        }
+    }
+
+    private fun showError(errorMessage: String) {
+        com.google.android.material.snackbar.Snackbar.make(
+            binding.root,
+            errorMessage,
+            com.google.android.material.snackbar.Snackbar.LENGTH_LONG
+        ).show()
+    }
+
+    private fun updateFavoriteIcon(isFavorited: Boolean) {
+        binding.fab.setImageResource(
+            if (isFavorited) R.drawable.baseline_favorite_24
+            else R.drawable.baseline_favorite_border_24
+        )
+    }
 
     private fun bindEventData(eventItem: ListEventsItem) {
         binding.apply {
@@ -114,14 +149,10 @@ class DetailEvent : Fragment() {
             imageLogo = eventItem.imageLogo
         )
 
-        viewModel.isFavorited.observe(viewLifecycleOwner) { isFavorited ->
-            if (isFavorited) {
-                viewModel.delete(favoriteEntity)
-                binding.fab.setImageResource(R.drawable.baseline_favorite_border_24)
-            } else {
-                viewModel.insert(favoriteEntity)
-                binding.fab.setImageResource(R.drawable.baseline_favorite_24)
-            }
+        if (viewModel.isFavorited.value == true) {
+            viewModel.delete(favoriteEntity)
+        } else {
+            viewModel.insert(favoriteEntity)
         }
     }
 
@@ -138,5 +169,11 @@ class DetailEvent : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        activity?.findViewById<BottomNavigationView>(R.id.nav_view)?.visibility = View.VISIBLE
+        _binding = null
+    }
+
+    private fun hideBottomNavigationView() {
+        activity?.findViewById<BottomNavigationView>(R.id.nav_view)?.visibility = View.GONE
     }
 }

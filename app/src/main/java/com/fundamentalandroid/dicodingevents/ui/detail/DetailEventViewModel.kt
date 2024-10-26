@@ -19,9 +19,23 @@ class DetailEventViewModel(application: Application) : ViewModel() {
     private val _isFavorited = MutableLiveData<Boolean>()
     val isFavorited: LiveData<Boolean> get() = _isFavorited
 
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+
+    private val _error = MutableLiveData<String?>(null)
+    val error: LiveData<String?> = _error
+
     private suspend fun checkIfFavorited(eventId: Int) {
-        val isFavored = mFavoriteRepository.isFavorited(eventId) // Now this returns a Boolean
-        _isFavorited.postValue(isFavored)
+        try {
+            _isLoading.value = true
+            val isFavored = mFavoriteRepository.isFavorited(eventId)
+            _isFavorited.postValue(isFavored)
+            _error.postValue(null)
+        } catch (e: Exception) {
+            _error.postValue(e.message ?: "Unknown error occurred")
+        } finally {
+            _isLoading.value = false
+        }
     }
 
     fun setEventItem(item: ListEventsItem) {
@@ -33,14 +47,32 @@ class DetailEventViewModel(application: Application) : ViewModel() {
 
     fun insert(favoriteEntity: FavoriteEntity) {
         viewModelScope.launch {
-            mFavoriteRepository.insert(favoriteEntity)
+            try {
+                _isLoading.value = true
+                mFavoriteRepository.insert(favoriteEntity)
+                _isFavorited.postValue(true)
+                _error.postValue(null)
+            } catch (e: Exception) {
+                _error.postValue(e.message ?: "Failed to add to favorites")
+            } finally {
+                _isLoading.value = false
+            }
         }
     }
 
     fun delete(favoriteEntity: FavoriteEntity) {
         viewModelScope.launch {
-            mFavoriteRepository.delete(favoriteEntity)
+            try {
+                _isLoading.value = true
+                mFavoriteRepository.delete(favoriteEntity)
+                _isFavorited.postValue(false)
+                _error.postValue(null)
+            } catch (e: Exception) {
+                _error.postValue(e.message ?: "Failed to remove from favorites")
+            } finally {
+                _isLoading.value = false
+            }
         }
     }
-}
 
+}

@@ -62,12 +62,11 @@ class HomeViewModel : ViewModel() {
         })
     }
 
-    // Add search function
     fun searchEvents(query: String) {
         if (query.isEmpty()) {
-            loadEvents() // Load all events if query is empty
+            loadEvents()
         } else {
-            loadEvents(query) // Load filtered events
+            loadEvents(query)
         }
     }
 }
